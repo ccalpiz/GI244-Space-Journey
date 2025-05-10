@@ -4,14 +4,20 @@ using UnityEngine.UI;
 
 public class ShipHealth : MonoBehaviour
 {
-    public int maxHealth = 3;
+    [Header("Health Settings")]
+    public int maxHealth = 5;
     public int currentHealth;
 
-    public Image[] hpImages; 
+    [Header("UI References")]
+    public Image[] hpImages;
 
     void Start()
     {
-        currentHealth = maxHealth;
+        if (currentHealth <= 0 || currentHealth > maxHealth)
+        {
+            currentHealth = Mathf.Clamp(currentHealth, 1, maxHealth);
+        }
+
         UpdateHPUI();
     }
 

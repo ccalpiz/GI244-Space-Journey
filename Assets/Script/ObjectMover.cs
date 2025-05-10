@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class ObjectMover : MonoBehaviour
 {
+    [Header("Mover Settings")]
     public float speed = 5f;
     public float destroyZ = -10f;
 

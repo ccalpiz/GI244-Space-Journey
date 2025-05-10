@@ -2,9 +2,11 @@ using UnityEngine;
 
 public class SpaceObjectSpawner : MonoBehaviour
 {
+    [Header("Object Prefab")]
     public GameObject mineralPrefab;
     public GameObject obstaclePrefab;
 
+    [Header("Spawn Settings")]
     public float spawnInterval = 1.5f;
     public float spawnDistance = 25f;
     public float xRange = 8f;

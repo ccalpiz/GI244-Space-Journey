@@ -4,15 +4,20 @@ public enum ObjectType { Mineral, Obstacle }
 
 public class SpaceObject : MonoBehaviour
 {
+    [Header("Object Type")]
     public ObjectType type = ObjectType.Mineral;
 
-    [Header("General Settings")]
+    [Header("Movement Settings")]
     public float moveSpeed = 5f;
+    public float driftAmount = 0.5f;
+    public float attractionStrength = 0.1f;
+
+    [Header("Rotation Settings")]
     public float rotationSpeedMin = 20f;
     public float rotationSpeedMax = 80f;
-    public float driftAmount = 0.5f;
+
+    [Header("Mineral Settings")]
     public int pointValue = 1;
-    public float attractionStrength = 0.1f;
 
     private Vector3 rotationAxis;
     private float rotationSpeed;
@@ -31,6 +36,25 @@ public class SpaceObject : MonoBehaviour
 
     void Update()
     {
+        Move();
+        Rotate();
+
+        if (transform.position.z < GameManager.Instance.Player.position.z - 10f)
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    void LateUpdate()
+    {
+        if (type == ObjectType.Mineral)
+        {
+            KeepOnScreen();
+        }
+    }
+
+    private void Move()
+    {
         Vector3 moveDir;
 
         if (type == ObjectType.Mineral && GameManager.Instance.Player != null)
@@ -44,21 +68,14 @@ public class SpaceObject : MonoBehaviour
         }
 
         transform.Translate((moveDir * moveSpeed + driftDirection) * Time.deltaTime, Space.World);
-        transform.Rotate(rotationAxis * rotationSpeed * Time.deltaTime);
-
-        if (transform.position.z < GameManager.Instance.Player.position.z - 10f)
-        {
-            Destroy(gameObject);
-        }
     }
 
-    void LateUpdate()
+    private void Rotate()
     {
-        if (type == ObjectType.Mineral)
-            KeepOnScreen();
+        transform.Rotate(rotationAxis * rotationSpeed * Time.deltaTime);
     }
 
-    void KeepOnScreen()
+    private void KeepOnScreen()
     {
         if (Camera.main == null) return;
 
@@ -70,24 +87,20 @@ public class SpaceObject : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
-        {
-            if (type == ObjectType.Mineral)
-            {
-                GameManager.Instance.AddScore(pointValue);
-                Destroy(gameObject);
-            }
-            else if (type == ObjectType.Obstacle)
-            {
-                ShipHealth ship = other.GetComponent<ShipHealth>();
-                if (ship == null)
-                    ship = other.GetComponentInParent<ShipHealth>();
+        if (!other.CompareTag("Player")) return;
 
-                if (ship != null)
-                {
-                    ship.TakeDamage(1);
-                    Destroy(gameObject);
-                }
+        if (type == ObjectType.Mineral)
+        {
+            GameManager.Instance.AddScore(pointValue);
+            Destroy(gameObject);
+        }
+        else if (type == ObjectType.Obstacle)
+        {
+            ShipHealth ship = other.GetComponent<ShipHealth>() ?? other.GetComponentInParent<ShipHealth>();
+            if (ship != null)
+            {
+                ship.TakeDamage(1);
+                Destroy(gameObject);
             }
         }
     }

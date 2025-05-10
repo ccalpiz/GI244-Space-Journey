@@ -3,16 +3,20 @@ using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour
 {
+    [Header("UI References")]
     public GameObject pauseMenuUI;
     public GameObject optionsPanel;
+
     public static bool GameIsPaused = false;
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (GameIsPaused) Resume();
-            else Pause();
+            if (GameIsPaused)
+                Resume();
+            else
+                Pause();
         }
     }
 
@@ -32,7 +36,7 @@ public class PauseMenu : MonoBehaviour
 
     public void QuitToMenu()
     {
-        Time.timeScale = 1f;
+        Time.timeScale = 1f; // Ensure game isn't paused in the next scene
         SceneManager.LoadScene("MainMenu");
     }
 }
