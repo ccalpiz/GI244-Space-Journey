@@ -34,6 +34,14 @@ public class ShipHealth : MonoBehaviour
         }
     }
 
+    public void Heal(int amount)
+    {
+        currentHealth += amount;
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+        Debug.Log("[Heal] Healed to " + currentHealth);
+        UpdateHPUI();
+    }
+
     void UpdateHPUI()
     {
         for (int i = 0; i < hpImages.Length; i++)

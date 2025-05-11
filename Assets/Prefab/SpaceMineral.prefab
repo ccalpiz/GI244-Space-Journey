@@ -68,7 +68,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 321cb3393e40b25479b00bbab85a851f, type: 2}
+  - {fileID: 2100000, guid: 9224458a815592d40aeaf4acdc48a886, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -152,11 +152,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 0
   moveSpeed: 5
+  driftAmount: 0.5
+  attractionStrength: 0.1
   rotationSpeedMin: 20
   rotationSpeedMax: 80
-  driftAmount: 0.5
   pointValue: 1
-  attractionStrength: 0.1
 --- !u!114 &5841005899100852298
 MonoBehaviour:
   m_ObjectHideFlags: 0

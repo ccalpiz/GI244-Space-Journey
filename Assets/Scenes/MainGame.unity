@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 3963fe4aa404fe749bf9fc5a5cc08e3c, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -1112,12 +1112,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 868800dcd9bd3b24ca742a5d2ab932c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainCamera: {fileID: 330585545}
-  boundaryPadding: 0.5
   moveSpeed: 5
+  boundaryPadding: 0.5
   dashSpeed: 20
   dashDuration: 0.2
-  dashCooldown: 1
+  dashCooldown: 0.5
+  mainCamera: {fileID: 330585545}
 --- !u!65 &870882859
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1582,7 +1582,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mineralPrefab: {fileID: 8821648212325750474, guid: 46f78c0ad22dece4bab3369cd7427da0, type: 3}
   obstaclePrefab: {fileID: 5326812333227966489, guid: 42197572bac6e804fb02fa7f1dbf3fbd, type: 3}
-  spawnInterval: 1.5
+  speedBoostPrefab: {fileID: 1014632771887022454, guid: 38163bd9356cd764caedcc045c8c8f23, type: 3}
+  healPrefab: {fileID: 6456533346061485696, guid: b2ebbac30a7feae4a9750e7d796e9ba1, type: 3}
+  normalSpawnInterval: 1.5
+  boostedSpawnInterval: 0.75
   spawnDistance: 25
   xRange: 8
   yRange: 5
@@ -1633,6 +1636,8 @@ MonoBehaviour:
   Player: {fileID: 870882863}
   score: 0
   scoreText: {fileID: 1604370338}
+  speedMultiplier: 2
+  speedBoostDuration: 5
 --- !u!4 &1589493293
 Transform:
   m_ObjectHideFlags: 0

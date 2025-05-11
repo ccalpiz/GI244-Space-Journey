@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public enum ObjectType { Mineral, Obstacle }
+public enum ObjectType { Mineral, Obstacle, SpeedBoost, Heal }
 
 public class SpaceObject : MonoBehaviour
 {
@@ -67,7 +67,15 @@ public class SpaceObject : MonoBehaviour
             moveDir = Vector3.back;
         }
 
-        transform.Translate((moveDir * moveSpeed + driftDirection) * Time.deltaTime, Space.World);
+        float currentSpeed = moveSpeed;
+
+        if (GameManager.Instance.IsSpeedBoostActive())
+        {
+            Debug.Log("[SpeedBoost] Boost active! Speed x" + GameManager.Instance.speedMultiplier);
+            currentSpeed *= GameManager.Instance.speedMultiplier;
+        }
+
+        transform.Translate((moveDir * currentSpeed + driftDirection) * Time.deltaTime, Space.World);
     }
 
     private void Rotate()
@@ -89,19 +97,33 @@ public class SpaceObject : MonoBehaviour
     {
         if (!other.CompareTag("Player")) return;
 
-        if (type == ObjectType.Mineral)
+        switch (type)
         {
-            GameManager.Instance.AddScore(pointValue);
-            Destroy(gameObject);
+            case ObjectType.Mineral:
+                GameManager.Instance.AddScore(pointValue);
+                break;
+
+            case ObjectType.Obstacle:
+                ShipHealth ship = other.GetComponent<ShipHealth>() ?? other.GetComponentInParent<ShipHealth>();
+                if (ship != null)
+                {
+                    ship.TakeDamage(1);
+                }
+                break;
+
+            case ObjectType.SpeedBoost:
+                GameManager.Instance.ActivateSpeedBoost();
+                break;
+
+            case ObjectType.Heal:
+                ShipHealth healShip = other.GetComponent<ShipHealth>() ?? other.GetComponentInParent<ShipHealth>();
+                if (healShip != null)
+                {
+                    healShip.Heal(1);
+                }
+                break;
         }
-        else if (type == ObjectType.Obstacle)
-        {
-            ShipHealth ship = other.GetComponent<ShipHealth>() ?? other.GetComponentInParent<ShipHealth>();
-            if (ship != null)
-            {
-                ship.TakeDamage(1);
-                Destroy(gameObject);
-            }
-        }
+            
+        Destroy(gameObject);
     }
 }

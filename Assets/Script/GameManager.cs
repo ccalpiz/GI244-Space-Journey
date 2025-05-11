@@ -12,6 +12,13 @@ public class GameManager : MonoBehaviour
     [Header("UI")]
     public Text scoreText;
 
+    [Header("Power-Up Settings")]
+    public float speedMultiplier = 2f;
+    public float speedBoostDuration = 5f;
+
+    private bool isSpeedBoostActive = true;
+    private float speedBoostTimer = 0f;
+
     private void Awake()
     {
         if (Instance == null)
@@ -26,6 +33,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        HandleSpeedBoost();
+    }
+
     public void AddScore(int amount)
     {
         score += amount;
@@ -38,5 +50,30 @@ public class GameManager : MonoBehaviour
         {
             scoreText.text = "Mineral Value : " + score.ToString();
         }
+    }
+
+    public void ActivateSpeedBoost()
+    {
+        Debug.Log("[PowerUp] Speed boost activated for " + speedBoostDuration + " seconds!");
+        isSpeedBoostActive = true;
+        speedBoostTimer = speedBoostDuration;
+    }
+
+    private void HandleSpeedBoost()
+    {
+        if (isSpeedBoostActive)
+        {
+            speedBoostTimer -= Time.deltaTime;
+            if (speedBoostTimer <= 0f)
+            {
+                isSpeedBoostActive = false;
+                Debug.Log("[PowerUp] Speed boost ended");
+            }
+        }
+    }
+
+    public bool IsSpeedBoostActive()
+    {
+        return isSpeedBoostActive;
     }
 }
