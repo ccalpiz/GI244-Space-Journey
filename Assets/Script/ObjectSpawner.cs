@@ -1,6 +1,6 @@
-using UnityEngine;
+﻿using UnityEngine;
 
-public class SpaceObjectSpawner : MonoBehaviour
+public class ObjectSpawner : MonoBehaviour
 {
     [Header("Object Prefab")]
     public GameObject mineralPrefab;
@@ -27,7 +27,9 @@ public class SpaceObjectSpawner : MonoBehaviour
 
     void Update()
     {
-        // Adjust spawn interval based on speed boost
+        if (GameManager.Instance == null || GameManager.Instance.Player == null || !GameManager.Instance.isGameActive)
+            return;
+
         currentSpawnInterval = GameManager.Instance.IsSpeedBoostActive() ? boostedSpawnInterval : normalSpawnInterval;
 
         spawnTimer += Time.deltaTime;
@@ -47,19 +49,19 @@ public class SpaceObjectSpawner : MonoBehaviour
 
         if (roll < 0.4f)
         {
-            prefabToSpawn = mineralPrefab;  // 40% 
+            prefabToSpawn = mineralPrefab;  // 40%
         }
         else if (roll < 0.7f)
         {
-            prefabToSpawn = obstaclePrefab; // 30% 
+            prefabToSpawn = obstaclePrefab;  // 30%
         }
         else if (roll < 0.85f)
         {
-            prefabToSpawn = speedBoostPrefab; // 15% 
+            prefabToSpawn = speedBoostPrefab;  // 15%
         }
         else
         {
-            prefabToSpawn = healPrefab; // 15% 
+            prefabToSpawn = healPrefab;  // 15%
         }
 
         Vector3 spawnPos = GameManager.Instance.Player.position + new Vector3(
@@ -69,5 +71,10 @@ public class SpaceObjectSpawner : MonoBehaviour
         );
 
         Instantiate(prefabToSpawn, spawnPos, Quaternion.identity);
+    }
+
+    public void ResetSpawner()
+    {
+        spawnTimer = 0f;
     }
 }

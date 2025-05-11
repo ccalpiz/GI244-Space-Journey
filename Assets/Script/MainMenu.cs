@@ -7,6 +7,11 @@ public class MainMenu : MonoBehaviour
 
     public void StartGame()
     {
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.ResetGame();
+        }
+
         SceneManager.LoadScene("MainGame");
     }
 

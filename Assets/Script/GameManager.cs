@@ -1,4 +1,5 @@
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
@@ -15,8 +16,13 @@ public class GameManager : MonoBehaviour
     [Header("Power-Up Settings")]
     public float speedMultiplier = 2f;
     public float speedBoostDuration = 5f;
+    public bool isGameActive = true;
 
-    private bool isSpeedBoostActive = true;
+    [Header("Player")]
+    public GameObject playerPrefab;
+    public Transform spawnPoint;
+
+    private bool isSpeedBoostActive = false;
     private float speedBoostTimer = 0f;
 
     private void Awake()
@@ -24,12 +30,36 @@ public class GameManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
+            // 🚨 REMOVE this line:
+            // DontDestroyOnLoad(gameObject);
         }
         else
         {
             Destroy(gameObject);
             return;
+        }
+    }
+
+
+
+    public void StartGame()
+    {
+        isGameActive = true;
+        score = 0;
+        UpdateScoreUI();
+
+        if (Player != null)
+        {
+            Destroy(Player.gameObject);
+        }
+
+        GameObject newPlayer = Instantiate(playerPrefab, spawnPoint.position, Quaternion.identity);
+        Player = newPlayer.transform;
+
+        ObjectSpawner spawner = FindFirstObjectByType<ObjectSpawner>();
+        if (spawner != null)
+        {
+            spawner.ResetSpawner();
         }
     }
 
@@ -75,5 +105,20 @@ public class GameManager : MonoBehaviour
     public bool IsSpeedBoostActive()
     {
         return isSpeedBoostActive;
+    }
+
+    public void ResetGame()
+    {
+        isGameActive = false;
+        score = 0;
+        Player = null;
+        isSpeedBoostActive = false;
+        speedBoostTimer = 0f;
+    }
+
+    public void EndGame()
+    {
+        ResetGame();
+        SceneManager.LoadScene("MainMenu");
     }
 }

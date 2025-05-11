@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class ShipController : MonoBehaviour
 {
@@ -22,20 +22,30 @@ public class ShipController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-    }
 
+        // 🛠️ Auto-assign if missing
+        if (mainCamera == null)
+        {
+            mainCamera = Camera.main;
+        }
+    }
     void Update()
     {
         HandleMovementInput();
         HandleDashInput();
+        Debug.Log("Move direction: " + moveDirection);
     }
 
     void FixedUpdate()
     {
         if (!isDashing)
         {
-            rb.velocity = moveDirection * moveSpeed;
+            rb.linearVelocity = moveDirection * moveSpeed;
         }
+
+        Vector3 v = rb.linearVelocity;
+        v.z = 0f;
+        rb.linearVelocity = v;
 
         ClampPositionToScreen();
     }
@@ -44,7 +54,7 @@ public class ShipController : MonoBehaviour
     {
         float moveX = Input.GetAxisRaw("Horizontal");
         float moveY = Input.GetAxisRaw("Vertical");
-        moveDirection = new Vector3(moveX, moveY, 0).normalized;
+        moveDirection = new Vector3(moveX, moveY, 0f).normalized;
     }
 
     void HandleDashInput()
@@ -59,12 +69,12 @@ public class ShipController : MonoBehaviour
     {
         canDash = false;
         isDashing = true;
-        rb.velocity = moveDirection * dashSpeed;
+        rb.linearVelocity = moveDirection * dashSpeed;
 
         yield return new WaitForSeconds(dashDuration);
 
         isDashing = false;
-        rb.velocity = Vector3.zero;
+        rb.linearVelocity = Vector3.zero;
 
         yield return new WaitForSeconds(dashCooldown);
         canDash = true;
@@ -80,6 +90,7 @@ public class ShipController : MonoBehaviour
 
         pos.x = Mathf.Clamp(pos.x, lowerLeft.x + boundaryPadding, upperRight.x - boundaryPadding);
         pos.y = Mathf.Clamp(pos.y, lowerLeft.y + boundaryPadding, upperRight.y - boundaryPadding);
+        pos.z = 0f;
 
         transform.position = pos;
     }

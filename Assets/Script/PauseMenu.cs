@@ -36,7 +36,7 @@ public class PauseMenu : MonoBehaviour
 
     public void QuitToMenu()
     {
-        Time.timeScale = 1f; // Ensure game isn't paused in the next scene
+        Time.timeScale = 1f;
         SceneManager.LoadScene("MainMenu");
     }
 }
