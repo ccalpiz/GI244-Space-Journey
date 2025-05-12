@@ -164,7 +164,7 @@ MonoBehaviour:
   attractionStrength: 0.1
   rotationSpeedMin: 10
   rotationSpeedMax: 30
-  pointValue: 0
+  pointValue: 3
 --- !u!114 &-3146934879413864744
 MonoBehaviour:
   m_ObjectHideFlags: 0

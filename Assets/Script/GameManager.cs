@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
@@ -30,8 +29,6 @@ public class GameManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            // 🚨 REMOVE this line:
-            // DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -40,10 +37,10 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
-
     public void StartGame()
     {
+        Time.timeScale = 1f;
+
         isGameActive = true;
         score = 0;
         UpdateScoreUI();
@@ -84,7 +81,6 @@ public class GameManager : MonoBehaviour
 
     public void ActivateSpeedBoost()
     {
-        Debug.Log("[PowerUp] Speed boost activated for " + speedBoostDuration + " seconds!");
         isSpeedBoostActive = true;
         speedBoostTimer = speedBoostDuration;
     }
@@ -97,7 +93,6 @@ public class GameManager : MonoBehaviour
             if (speedBoostTimer <= 0f)
             {
                 isSpeedBoostActive = false;
-                Debug.Log("[PowerUp] Speed boost ended");
             }
         }
     }
@@ -107,8 +102,19 @@ public class GameManager : MonoBehaviour
         return isSpeedBoostActive;
     }
 
+    public void EndGame()
+    {
+        isGameActive = false;
+
+        if (Player != null)
+        {
+            Destroy(Player.gameObject);
+            Player = null;
+        }
+    }
     public void ResetGame()
     {
+        Time.timeScale = 1f;
         isGameActive = false;
         score = 0;
         Player = null;
@@ -116,9 +122,4 @@ public class GameManager : MonoBehaviour
         speedBoostTimer = 0f;
     }
 
-    public void EndGame()
-    {
-        ResetGame();
-        SceneManager.LoadScene("MainMenu");
-    }
 }

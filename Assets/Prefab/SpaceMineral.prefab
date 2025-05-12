@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 5841005899100852298}
   m_Layer: 0
   m_Name: SpaceMineral
-  m_TagString: Obstacle
+  m_TagString: Mineral
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

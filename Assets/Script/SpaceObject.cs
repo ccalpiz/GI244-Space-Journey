@@ -71,7 +71,6 @@ public class SpaceObject : MonoBehaviour
 
         if (GameManager.Instance.IsSpeedBoostActive())
         {
-            Debug.Log("[SpeedBoost] Boost active! Speed x" + GameManager.Instance.speedMultiplier);
             currentSpeed *= GameManager.Instance.speedMultiplier;
         }
 

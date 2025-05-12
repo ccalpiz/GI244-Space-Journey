@@ -9,15 +9,16 @@ public class ShipHealth : MonoBehaviour
     public int currentHealth;
 
     [Header("UI References")]
-    public Image[] hpImages;
+    [HideInInspector] public Image[] hpImages;
 
     void Start()
     {
-        if (currentHealth <= 0 || currentHealth > maxHealth)
+        if (UIManager.Instance != null)
         {
-            currentHealth = Mathf.Clamp(currentHealth, 1, maxHealth);
+            hpImages = UIManager.Instance.hpImages;
         }
 
+        currentHealth = Mathf.Clamp(currentHealth <= 0 ? maxHealth : currentHealth, 1, maxHealth);
         UpdateHPUI();
     }
 
@@ -38,12 +39,13 @@ public class ShipHealth : MonoBehaviour
     {
         currentHealth += amount;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
-        Debug.Log("[Heal] Healed to " + currentHealth);
         UpdateHPUI();
     }
 
     void UpdateHPUI()
     {
+        if (hpImages == null || hpImages.Length == 0) return;
+
         for (int i = 0; i < hpImages.Length; i++)
         {
             hpImages[i].enabled = i < currentHealth;
@@ -52,6 +54,7 @@ public class ShipHealth : MonoBehaviour
 
     void GameOver()
     {
+        Time.timeScale = 1f;
         SceneManager.LoadScene("MainMenu");
     }
 }

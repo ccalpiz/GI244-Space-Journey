@@ -23,7 +23,6 @@ public class ShipController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
 
-        // 🛠️ Auto-assign if missing
         if (mainCamera == null)
         {
             mainCamera = Camera.main;
@@ -33,7 +32,6 @@ public class ShipController : MonoBehaviour
     {
         HandleMovementInput();
         HandleDashInput();
-        Debug.Log("Move direction: " + moveDirection);
     }
 
     void FixedUpdate()
