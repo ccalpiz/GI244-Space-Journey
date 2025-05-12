@@ -121,5 +121,4 @@ public class GameManager : MonoBehaviour
         isSpeedBoostActive = false;
         speedBoostTimer = 0f;
     }
-
 }

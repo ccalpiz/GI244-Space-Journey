@@ -5,7 +5,6 @@ public class PauseMenu : MonoBehaviour
 {
     [Header("UI References")]
     public GameObject pauseMenuUI;
-    public GameObject optionsPanel;
 
     public static bool GameIsPaused = false;
 
