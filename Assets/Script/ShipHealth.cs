@@ -9,27 +9,20 @@ public class ShipHealth : MonoBehaviour
     public int currentHealth;
 
     [Header("UI References")]
-    [HideInInspector] public Image[] hpImages;
+    public Image[] hpImages;
 
     void Start()
     {
-        if (UIManager.Instance != null)
-        {
-            hpImages = UIManager.Instance.hpImages;
-        }
-
-        currentHealth = Mathf.Clamp(currentHealth <= 0 ? maxHealth : currentHealth, 1, maxHealth);
+        currentHealth = Mathf.Clamp(currentHealth > 0 ? currentHealth : maxHealth, 1, maxHealth);
         UpdateHPUI();
     }
 
     public void TakeDamage(int amount)
     {
-        currentHealth -= amount;
-        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
-
+        currentHealth = Mathf.Max(currentHealth - amount, 0);
         UpdateHPUI();
 
-        if (currentHealth <= 0)
+        if (currentHealth == 0)
         {
             GameOver();
         }
@@ -37,8 +30,7 @@ public class ShipHealth : MonoBehaviour
 
     public void Heal(int amount)
     {
-        currentHealth += amount;
-        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+        currentHealth = Mathf.Min(currentHealth + amount, maxHealth);
         UpdateHPUI();
     }
 

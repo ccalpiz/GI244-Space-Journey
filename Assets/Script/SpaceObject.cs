@@ -39,7 +39,7 @@ public class SpaceObject : MonoBehaviour
         Move();
         Rotate();
 
-        if (transform.position.z < GameManager.Instance.Player.position.z - 10f)
+        if (GameManager.Instance != null && transform.position.z < GameManager.Instance.Player.position.z - 10f)
         {
             Destroy(gameObject);
         }
@@ -55,26 +55,21 @@ public class SpaceObject : MonoBehaviour
 
     private void Move()
     {
-        Vector3 moveDir;
+        Vector3 moveDir = Vector3.back;
 
-        if (type == ObjectType.Mineral && GameManager.Instance.Player != null)
+        if (type == ObjectType.Mineral && GameManager.Instance?.Player != null)
         {
             Vector3 toPlayer = (GameManager.Instance.Player.position - transform.position).normalized;
-            moveDir = (Vector3.back * (1f - attractionStrength) + toPlayer * attractionStrength).normalized;
-        }
-        else
-        {
-            moveDir = Vector3.back;
+            moveDir = Vector3.back * (1f - attractionStrength) + toPlayer * attractionStrength;
+            moveDir.Normalize();
         }
 
-        float currentSpeed = moveSpeed;
+        float currentSpeed = GameManager.Instance != null && GameManager.Instance.IsSpeedBoostActive()
+            ? moveSpeed * GameManager.Instance.speedMultiplier
+            : moveSpeed;
 
-        if (GameManager.Instance.IsSpeedBoostActive())
-        {
-            currentSpeed *= GameManager.Instance.speedMultiplier;
-        }
-
-        transform.Translate((moveDir * currentSpeed + driftDirection) * Time.deltaTime, Space.World);
+        Vector3 velocity = (moveDir * currentSpeed + driftDirection) * Time.deltaTime;
+        transform.Translate(velocity, Space.World);
     }
 
     private void Rotate()
@@ -89,6 +84,7 @@ public class SpaceObject : MonoBehaviour
         Vector3 screenPos = Camera.main.WorldToViewportPoint(transform.position);
         screenPos.x = Mathf.Clamp(screenPos.x, 0.05f, 0.95f);
         screenPos.y = Mathf.Clamp(screenPos.y, 0.05f, 0.95f);
+
         transform.position = Camera.main.ViewportToWorldPoint(screenPos);
     }
 
@@ -96,33 +92,27 @@ public class SpaceObject : MonoBehaviour
     {
         if (!other.CompareTag("Player")) return;
 
+        var ship = other.GetComponent<ShipHealth>() ?? other.GetComponentInParent<ShipHealth>();
+
         switch (type)
         {
             case ObjectType.Mineral:
-                GameManager.Instance.AddScore(pointValue);
+                GameManager.Instance?.AddScore(pointValue);
                 break;
 
             case ObjectType.Obstacle:
-                ShipHealth ship = other.GetComponent<ShipHealth>() ?? other.GetComponentInParent<ShipHealth>();
-                if (ship != null)
-                {
-                    ship.TakeDamage(1);
-                }
+                ship?.TakeDamage(1);
                 break;
 
             case ObjectType.SpeedBoost:
-                GameManager.Instance.ActivateSpeedBoost();
+                GameManager.Instance?.ActivateSpeedBoost();
                 break;
 
             case ObjectType.Heal:
-                ShipHealth healShip = other.GetComponent<ShipHealth>() ?? other.GetComponentInParent<ShipHealth>();
-                if (healShip != null)
-                {
-                    healShip.Heal(1);
-                }
+                ship?.Heal(1);
                 break;
         }
-            
+
         Destroy(gameObject);
     }
 }

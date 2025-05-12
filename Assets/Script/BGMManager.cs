@@ -10,11 +10,12 @@ public class BGMManager : MonoBehaviour
     {
         if (Instance != null && Instance != this)
         {
-            Destroy(gameObject);
+            Destroy(gameObject); // Prevent duplicate BGM
             return;
         }
 
         Instance = this;
+        DontDestroyOnLoad(gameObject); // Survive scene changes
 
         audioSource = GetComponent<AudioSource>();
         if (audioSource != null && !audioSource.isPlaying)

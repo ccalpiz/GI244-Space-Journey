@@ -8,7 +8,7 @@ public class ObjectMover : MonoBehaviour
 
     void Update()
     {
-        transform.Translate(Vector3.back * speed * Time.deltaTime);
+        transform.Translate(Vector3.back * speed * Time.deltaTime, Space.World);
 
         if (transform.position.z < destroyZ)
         {

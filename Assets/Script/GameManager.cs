@@ -11,11 +11,11 @@ public class GameManager : MonoBehaviour
 
     [Header("UI")]
     public Text scoreText;
+    public Image[] hpImages;
 
     [Header("Power-Up Settings")]
     public float speedMultiplier = 2f;
     public float speedBoostDuration = 5f;
-    public bool isGameActive = true;
 
     [Header("Player")]
     public GameObject playerPrefab;
@@ -23,29 +23,35 @@ public class GameManager : MonoBehaviour
 
     private bool isSpeedBoostActive = false;
     private float speedBoostTimer = 0f;
+    public bool isGameActive = true;
 
     private void Awake()
     {
         if (Instance == null)
-        {
             Instance = this;
-        }
         else
-        {
             Destroy(gameObject);
-            return;
+    }
+
+    private void Update()
+    {
+        if (isSpeedBoostActive)
+        {
+            speedBoostTimer -= Time.deltaTime;
+            if (speedBoostTimer <= 0f)
+                isSpeedBoostActive = false;
         }
     }
 
     public void StartGame()
     {
         Time.timeScale = 1f;
-
         isGameActive = true;
         score = 0;
         UpdateScoreUI();
 
-        if (Player != null)
+        // Safely destroy only scene-instance player
+        if (Player != null && Player.gameObject.scene.IsValid())
         {
             Destroy(Player.gameObject);
         }
@@ -53,16 +59,13 @@ public class GameManager : MonoBehaviour
         GameObject newPlayer = Instantiate(playerPrefab, spawnPoint.position, Quaternion.identity);
         Player = newPlayer.transform;
 
-        ObjectSpawner spawner = FindFirstObjectByType<ObjectSpawner>();
-        if (spawner != null)
+        var shipHealth = newPlayer.GetComponent<ShipHealth>();
+        if (shipHealth != null && hpImages != null)
         {
-            spawner.ResetSpawner();
+            shipHealth.hpImages = hpImages;
         }
-    }
 
-    private void Update()
-    {
-        HandleSpeedBoost();
+        FindFirstObjectByType<ObjectSpawner>()?.ResetSpawner();
     }
 
     public void AddScore(int amount)
@@ -74,9 +77,7 @@ public class GameManager : MonoBehaviour
     private void UpdateScoreUI()
     {
         if (scoreText != null)
-        {
-            scoreText.text = "Mineral Value : " + score.ToString();
-        }
+            scoreText.text = $"Mineral Value : {score}";
     }
 
     public void ActivateSpeedBoost()
@@ -85,33 +86,20 @@ public class GameManager : MonoBehaviour
         speedBoostTimer = speedBoostDuration;
     }
 
-    private void HandleSpeedBoost()
-    {
-        if (isSpeedBoostActive)
-        {
-            speedBoostTimer -= Time.deltaTime;
-            if (speedBoostTimer <= 0f)
-            {
-                isSpeedBoostActive = false;
-            }
-        }
-    }
-
-    public bool IsSpeedBoostActive()
-    {
-        return isSpeedBoostActive;
-    }
+    public bool IsSpeedBoostActive() => isSpeedBoostActive;
 
     public void EndGame()
     {
         isGameActive = false;
 
-        if (Player != null)
+        if (Player != null && Player.gameObject.scene.IsValid())
         {
             Destroy(Player.gameObject);
-            Player = null;
         }
+
+        Player = null;
     }
+
     public void ResetGame()
     {
         Time.timeScale = 1f;

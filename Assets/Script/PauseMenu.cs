@@ -6,7 +6,7 @@ public class PauseMenu : MonoBehaviour
     [Header("UI References")]
     public GameObject pauseMenuUI;
 
-    public static bool GameIsPaused = false;
+    public static bool GameIsPaused { get; private set; }
 
     void Update()
     {
@@ -21,14 +21,18 @@ public class PauseMenu : MonoBehaviour
 
     public void Resume()
     {
-        pauseMenuUI.SetActive(false);
+        if (pauseMenuUI != null)
+            pauseMenuUI.SetActive(false);
+
         Time.timeScale = 1f;
         GameIsPaused = false;
     }
 
-    void Pause()
+    private void Pause()
     {
-        pauseMenuUI.SetActive(true);
+        if (pauseMenuUI != null)
+            pauseMenuUI.SetActive(true);
+
         Time.timeScale = 0f;
         GameIsPaused = true;
     }

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 public class ShipController : MonoBehaviour
 {
@@ -22,12 +23,10 @@ public class ShipController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-
         if (mainCamera == null)
-        {
             mainCamera = Camera.main;
-        }
     }
+
     void Update()
     {
         HandleMovementInput();
@@ -38,12 +37,8 @@ public class ShipController : MonoBehaviour
     {
         if (!isDashing)
         {
-            rb.linearVelocity = moveDirection * moveSpeed;
+            rb.linearVelocity = new Vector3(moveDirection.x, moveDirection.y, 0f) * moveSpeed;
         }
-
-        Vector3 v = rb.linearVelocity;
-        v.z = 0f;
-        rb.linearVelocity = v;
 
         ClampPositionToScreen();
     }
@@ -63,18 +58,18 @@ public class ShipController : MonoBehaviour
         }
     }
 
-    System.Collections.IEnumerator Dash()
+    IEnumerator Dash()
     {
         canDash = false;
         isDashing = true;
-        rb.linearVelocity = moveDirection * dashSpeed;
 
+        rb.linearVelocity = new Vector3(moveDirection.x, moveDirection.y, 0f) * dashSpeed;
         yield return new WaitForSeconds(dashDuration);
 
         isDashing = false;
         rb.linearVelocity = Vector3.zero;
-
         yield return new WaitForSeconds(dashCooldown);
+
         canDash = true;
     }
 

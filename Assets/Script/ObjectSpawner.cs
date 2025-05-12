@@ -17,23 +17,17 @@ public class ObjectSpawner : MonoBehaviour
     public float xRange = 8f;
     public float yRange = 5f;
 
-    private float currentSpawnInterval;
     private float spawnTimer = 0f;
-
-    void Start()
-    {
-        currentSpawnInterval = normalSpawnInterval;
-    }
 
     void Update()
     {
-        if (GameManager.Instance == null || GameManager.Instance.Player == null || !GameManager.Instance.isGameActive)
+        if (GameManager.Instance?.Player == null || !GameManager.Instance.isGameActive)
             return;
 
-        currentSpawnInterval = GameManager.Instance.IsSpeedBoostActive() ? boostedSpawnInterval : normalSpawnInterval;
+        float interval = GameManager.Instance.IsSpeedBoostActive() ? boostedSpawnInterval : normalSpawnInterval;
 
         spawnTimer += Time.deltaTime;
-        if (spawnTimer >= currentSpawnInterval)
+        if (spawnTimer >= interval)
         {
             SpawnRandomObject();
             spawnTimer = 0f;
@@ -42,27 +36,14 @@ public class ObjectSpawner : MonoBehaviour
 
     void SpawnRandomObject()
     {
-        if (GameManager.Instance.Player == null) return;
-
         float roll = Random.value;
-        GameObject prefabToSpawn;
-
-        if (roll < 0.4f)
+        GameObject prefabToSpawn = roll switch
         {
-            prefabToSpawn = mineralPrefab;  // 40%
-        }
-        else if (roll < 0.7f)
-        {
-            prefabToSpawn = obstaclePrefab;  // 30%
-        }
-        else if (roll < 0.85f)
-        {
-            prefabToSpawn = speedBoostPrefab;  // 15%
-        }
-        else
-        {
-            prefabToSpawn = healPrefab;  // 15%
-        }
+            < 0.4f => mineralPrefab,
+            < 0.7f => obstaclePrefab,
+            < 0.85f => speedBoostPrefab,
+            _ => healPrefab
+        };
 
         Vector3 spawnPos = GameManager.Instance.Player.position + new Vector3(
             Random.Range(-xRange, xRange),
