@@ -50,7 +50,6 @@ public class GameManager : MonoBehaviour
         score = 0;
         UpdateScoreUI();
 
-        // Safely destroy only scene-instance player
         if (Player != null && Player.gameObject.scene.IsValid())
         {
             Destroy(Player.gameObject);
