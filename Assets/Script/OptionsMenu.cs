@@ -26,7 +26,5 @@ public class OptionsMenu : MonoBehaviour
 
         mixer.SetFloat("MasterVolume", dB);
         PlayerPrefs.SetFloat("Volume", clampedValue);
-
-        Debug.Log($"[Volume] Value = {rawValue}, Clamped = {clampedValue}, dB = {dB}");
     }
 }

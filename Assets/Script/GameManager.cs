@@ -17,9 +17,13 @@ public class GameManager : MonoBehaviour
     public float speedMultiplier = 2f;
     public float speedBoostDuration = 5f;
 
-    [Header("Player")]
+    [Header("Player Settings")]
     public GameObject playerPrefab;
     public Transform spawnPoint;
+
+    [Header("Game Over UI")]
+    public GameObject gameOverPanel;
+    public Text finalScoreText;
 
     private bool isSpeedBoostActive = false;
     private float speedBoostTimer = 0f;
@@ -50,19 +54,18 @@ public class GameManager : MonoBehaviour
         score = 0;
         UpdateScoreUI();
 
+        if (gameOverPanel != null)
+            gameOverPanel.SetActive(false);
+
         if (Player != null && Player.gameObject.scene.IsValid())
-        {
             Destroy(Player.gameObject);
-        }
 
         GameObject newPlayer = Instantiate(playerPrefab, spawnPoint.position, Quaternion.identity);
         Player = newPlayer.transform;
 
         var shipHealth = newPlayer.GetComponent<ShipHealth>();
         if (shipHealth != null && hpImages != null)
-        {
             shipHealth.hpImages = hpImages;
-        }
 
         FindFirstObjectByType<ObjectSpawner>()?.ResetSpawner();
     }
@@ -92,11 +95,21 @@ public class GameManager : MonoBehaviour
         isGameActive = false;
 
         if (Player != null && Player.gameObject.scene.IsValid())
-        {
             Destroy(Player.gameObject);
-        }
 
         Player = null;
+    }
+
+    public void ShowGameOver()
+    {
+        isGameActive = false;
+        Time.timeScale = 0f;
+
+        if (gameOverPanel != null)
+            gameOverPanel.SetActive(true);
+
+        if (finalScoreText != null)
+            finalScoreText.text = $"Final Score: {score}";
     }
 
     public void ResetGame()

@@ -47,6 +47,6 @@ public class ShipHealth : MonoBehaviour
     void GameOver()
     {
         Time.timeScale = 1f;
-        SceneManager.LoadScene("MainMenu");
+        GameManager.Instance?.ShowGameOver();
     }
 }
